@@ -1,10 +1,8 @@
-import { FunctionComponent, ReactNode } from 'react';
-import NextAuthProvider from '@/providers/NextAuthProvider';
+import { FunctionComponent, ReactNode } from "react";
+import NextAuthProvider from "@/providers/NextAuthProvider";
 
-import { getCookie } from '@/app/actions/cookies';
-import { getSupplier } from '@/services';
-import NavContainer from '@/components/nav/navContainer';
-
+import { getCookie } from "@/app/actions/cookies";
+import { getSupplier } from "@/services";
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -13,7 +11,7 @@ interface MainLayoutProps {
 const MainLayout: FunctionComponent<MainLayoutProps> = async ({ children }) => {
   let supplier;
 
-  const supplierId = (await getCookie('supplierId'))?.value || '';
+  const supplierId = (await getCookie("supplierId"))?.value || "";
 
   if (supplierId) {
     // global
@@ -22,7 +20,9 @@ const MainLayout: FunctionComponent<MainLayoutProps> = async ({ children }) => {
 
   return (
     <NextAuthProvider>
-      <NavContainer supplier={supplier}>{children}</NavContainer>
+      {/* <NavContainer supplier={supplier}> */}
+      {children}
+      {/* </NavContainer> */}
     </NextAuthProvider>
   );
 };

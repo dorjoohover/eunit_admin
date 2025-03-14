@@ -1,11 +1,16 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
-import { ApiResponseType } from '@/types';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+import { ApiResponseType } from "@/types";
+import { toast } from "react-toastify";
 import { MEDIA_URL } from "./configs";
-import { toast } from 'react-toastify';
+
 type KeyValue<K extends string | number | symbol, V> = { key: K; value: V };
+
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 export function tr(text: string) {
@@ -16,34 +21,53 @@ export const formatUnit = (value: string | number, unit: string) => {
   return value ? `${value.toLocaleString()} ${unit}` : `0 ${unit}`;
 };
 
-export function objectToArray<T extends Record<string, unknown>>(obj: T): KeyValue<keyof T, T[keyof T]>[] {
+export function objectToArray<T extends Record<string, unknown>>(
+  obj: T
+): KeyValue<keyof T, T[keyof T]>[] {
   return Object.entries(obj).map(([key, value]) => ({
     key: key as keyof T,
-    value: value as T[keyof T]
+    value: value as T[keyof T],
   }));
 }
 
 export const convertObjectToParam = (object: Record<string, unknown>): string =>
   new URLSearchParams(
     Object.entries(object)
-      .filter(([, value]) => value !== null && value !== undefined && value !== '')
+      .filter(
+        ([, value]) => value !== null && value !== undefined && value !== ""
+      )
       .map(([key, value]) => [key, String(value)])
   ).toString();
 
 export const removeFromObject = (obj: Record<string, string>): void =>
-  Object.keys(obj).forEach(key => {
-    if (obj[key] === '' || (typeof obj[key] === 'object' && Object.keys(obj[key]).length === 0 && obj[key] !== null)) {
+  Object.keys(obj).forEach((key) => {
+    if (
+      obj[key] === "" ||
+      (typeof obj[key] === "object" &&
+        Object.keys(obj[key]).length === 0 &&
+        obj[key] !== null)
+    ) {
       delete obj[key];
     }
   });
 
-export const removeEmptyStringFields = (obj: Record<string, any>): Record<string, any> => {
+export const removeEmptyStringFields = (
+  obj: Record<string, any>
+): Record<string, any> => {
   return Object.fromEntries(
-    Object.entries(obj).filter(([, value]) => value !== '' && value !== undefined && value !== null && value !== 'undefined')
+    Object.entries(obj).filter(
+      ([, value]) =>
+        value !== "" &&
+        value !== undefined &&
+        value !== null &&
+        value !== "undefined"
+    )
   );
 };
 
-export function formDataToObject(formData: FormData): Record<string, string | string[]> {
+export function formDataToObject(
+  formData: FormData
+): Record<string, string | string[]> {
   const obj: Record<string, string | string[]> = {};
 
   formData.forEach((value: any, key) => {
@@ -61,27 +85,56 @@ export function formDataToObject(formData: FormData): Record<string, string | st
   return obj;
 }
 
+export const navActive = (current: string, value: string) => {
+  let path = current.substring(1);
+  return path == value;
+};
+
+export const dateFormatter = (d: Date | string) => {
+  let date = new Date(d);
+  const year = date.getFullYear();
+  let month = `${date.getMonth()}`;
+  parseInt(month) < 10 ? (month = `0${month}`) : null;
+  let day = `${date.getDate()}`;
+  parseInt(day) < 10 ? (day = `0${day}`) : null;
+  let hours = `${date.getHours() ?? "0"}`;
+  parseInt(hours) < 10 ? (hours = `0${hours}`) : null;
+  let minutes = `${date.getMinutes() ?? "0"}`;
+  parseInt(minutes) < 10 ? (minutes = `0${minutes}`) : null;
+  let seconds = `${date.getSeconds() ?? "0"}`;
+  parseInt(seconds) < 10 ? (seconds = `0${seconds}`) : null;
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+};
+
 export const replaceMediaUrl = (imageUrl?: string) => {
   if (!imageUrl) {
-    return '/assets/logos/logo-admin.svg';
+    return "/assets/logos/logo-admin.svg";
   }
 
-  if (!imageUrl.includes('/media')) {
+  if (!imageUrl.includes("/media")) {
     return `${MEDIA_URL}/original/${imageUrl}`;
   }
 
   return imageUrl.replace(/^https:\/\/[^/]+\/media/, `${MEDIA_URL}`);
 };
 
-export const replaceUploadingMediaUrl = (image: string) => image.replace(`${MEDIA_URL}/original/`, '');
+export const replaceUploadingMediaUrl = (image: string) =>
+  image.replace(`${MEDIA_URL}/original/`, "");
 
 export const getValueByPath = (obj: Record<string, any>, path: string): any => {
-  const keys = path.split('.');
+  const keys = path.split(".");
 
-  return keys.reduce((acc, key) => (acc && acc[key] !== undefined ? acc[key] : undefined), obj);
+  return keys.reduce(
+    (acc, key) => (acc && acc[key] !== undefined ? acc[key] : undefined),
+    obj
+  );
 };
 
-export function convertExcelFromBase64(base64Data: string, filename = 'file.xlsx') {
+export function convertExcelFromBase64(
+  base64Data: string,
+  filename = "file.xlsx"
+) {
   const byteCharacters = atob(base64Data);
   const byteNumbers = new Array(byteCharacters.length);
 
@@ -91,11 +144,11 @@ export function convertExcelFromBase64(base64Data: string, filename = 'file.xlsx
 
   const byteArray = new Uint8Array(byteNumbers);
   const blob = new Blob([byteArray], {
-    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   });
 
   const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
+  const link = document.createElement("a");
   link.href = url;
   link.download = filename;
 
@@ -107,9 +160,9 @@ export function convertExcelFromBase64(base64Data: string, filename = 'file.xlsx
 
 export function toastMessage<T>(response: ApiResponseType<T>) {
   if (!response.errors) {
-    toast(tr('Амжилттай хадгаллаа'), { type: 'success' });
+    toast(tr("Амжилттай хадгаллаа"), { type: "success" });
   } else {
-    toast(response.errors[0].message, { type: 'error' });
+    toast(response.errors[0].message, { type: "error" });
   }
 }
 

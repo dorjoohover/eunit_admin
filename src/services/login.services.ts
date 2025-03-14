@@ -1,5 +1,5 @@
-import { API_URL } from '@/configs';
 import { setCookie } from '@/app/actions/cookies';
+import { API_URL } from '@/lib/configs';
 
 export async function loginFetch<T>(body: T) {
   const response = await fetch(`${API_URL}/users/signIn`, {

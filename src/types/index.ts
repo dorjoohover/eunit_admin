@@ -6,3 +6,4 @@ export * from './merchant.types';
 export * from './brand.types';
 export * from './category.types';
 export * from './featured.types';
+export * from './user.types';

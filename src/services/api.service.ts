@@ -46,7 +46,7 @@ async function processResponse<T>(
   const successResponse = await response.json();
 
   return {
-    data: successResponse?.data || successResponse || ([] as T),
+    data: successResponse?.payload || successResponse || ([] as T),
     total: successResponse?.total || 0,
     totalPage: successResponse?.totalPages || 0,
     currentPage: successResponse?.currentPage || 0,
@@ -97,9 +97,10 @@ export const apiService = {
     resource: string,
     filter?: SearchParamsFilterType
   ): Promise<ApiResponseType<T>> {
-    const supplierId = (await getCookie("supplierId"))?.value || "";
+    const supplierId = (await getCookie("token"))?.value || "";
 
-    const extendedFilter = { limit: 10, supplierId, ...filter };
+    // const extendedFilter = { limit: 10, supplierId, ...filter };
+    const extendedFilter = {  supplierId, ...filter };
 
     return request<T>(resource, "GET", {
       filter: removeEmptyStringFields(extendedFilter),

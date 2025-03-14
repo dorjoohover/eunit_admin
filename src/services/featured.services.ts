@@ -1,8 +1,9 @@
 import { getCookie } from "@/app/actions/cookies";
-import { API_URL } from "@/configs";
+import { API_URL } from "@/lib/configs";
+import { removeEmptyStringFields } from "@/lib/utils";
+
 import { apiService, fetcher } from "@/services";
 import { ApiResponseType, FeaturedType, SearchParamsFilterType } from "@/types";
-import { removeEmptyStringFields } from "@/utils";
 const createUrl = (
   endpoint: string,
   filter?: SearchParamsFilterType
