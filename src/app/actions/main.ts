@@ -19,7 +19,12 @@ export const removeSupplierAction = async (pathname: string) => {
   redirect(pathname);
 };
 
-export const changePathAction = async (pathname: string, filters?: any) => {
+export const changePathAction = async (
+  pathname: string,
+  filters?: {
+    [key: string]: string;
+  }
+) => {
   redirect(
     `${pathname}${
       filters

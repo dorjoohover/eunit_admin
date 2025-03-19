@@ -1,4 +1,4 @@
-import { getCookie } from "@/app/actions/cookies";
+// import { getCookie } from "@/app/actions/cookies";
 import { API_URL, MEDIA_UPLOAD } from "@/lib/configs";
 import { removeEmptyStringFields } from "@/lib/utils";
 import { ApiResponseType, SearchParamsFilterType } from "@/types";

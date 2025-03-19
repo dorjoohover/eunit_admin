@@ -52,7 +52,7 @@ export const CustomTable: FunctionComponent<CustomTableProps> = ({
   rows,
   totalPage,
   currentPage,
-  total,
+  // total,
 }) => {
   const { open } = useSidebar();
   const searchParams = useSearchParams();
@@ -102,12 +102,9 @@ export const CustomTable: FunctionComponent<CustomTableProps> = ({
                 />
                 {row.data.map((r, k) => {
                   return (
-                    <CustomTableCell
-                      texts={r.texts}
-                      children={r.children}
-                      key={k}
-                      w={row.w?.[k]}
-                    />
+                    <CustomTableCell texts={r.texts} key={k} w={row.w?.[k]}>
+                      {r.children}
+                    </CustomTableCell>
                   );
                 })}
 

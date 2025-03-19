@@ -3,7 +3,7 @@ import Image from "next/image";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import React, { Dispatch, ReactNode, useState } from "react";
+import { Dispatch, ReactNode, SetStateAction, useState } from "react";
 import { usePathname } from "next/navigation";
 import { InputType, SERVICE } from "@/lib/constant";
 import { DatePicker } from "./DatePicker";
@@ -49,7 +49,14 @@ function values(p: string) {
 }
 function tableFilters(
   path: string,
-  onChange: Dispatch<any>,
+  onChange: Dispatch<
+    SetStateAction<
+      | {
+          [key: string]: string;
+        }
+      | undefined
+    >
+  >,
   data?: { value: string | number; name: string }[]
 ) {
   let filters: {
@@ -67,7 +74,7 @@ function tableFilters(
           pl: "Овог",
           l: "Овог",
           onChange: (e) => {
-            onChange((prev: any) => ({ ...prev, lastname: e }));
+            onChange((prev) => ({ ...prev, lastname: e as string }));
           },
           key: "lastname",
           type: InputType.text,
@@ -76,7 +83,7 @@ function tableFilters(
           pl: "Нэр",
           l: "Нэр",
           onChange: (e) => {
-            onChange((prev: any) => ({ ...prev, firstname: e }));
+            onChange((prev) => ({ ...prev, firstname: e as string }));
           },
           type: InputType.text,
           key: "firstname",
@@ -86,7 +93,7 @@ function tableFilters(
           l: "Цахим хаяг",
           key: "email",
           onChange: (e) => {
-            onChange((prev: any) => ({ ...prev, email: e }));
+            onChange((prev) => ({ ...prev, email: e as string }));
           },
           type: InputType.email,
         },
@@ -95,7 +102,7 @@ function tableFilters(
           pl: "Утасны дугаар",
           l: "Утасны дугаар",
           onChange: (e) => {
-            onChange((prev: any) => ({ ...prev, phone: e }));
+            onChange((prev) => ({ ...prev, phone: e as string }));
           },
           type: InputType.number,
         },
@@ -104,7 +111,7 @@ function tableFilters(
           key: "date",
           l: "Огноо",
           onChange: (e) => {
-            onChange((prev: any) => ({ ...prev, date: e }));
+            onChange((prev) => ({ ...prev, date: e as string }));
           },
           type: InputType.date,
         },
@@ -117,7 +124,7 @@ function tableFilters(
           l: "Хэрэглэгч",
           key: "user",
           onChange: (e) => {
-            onChange((prev: any) => ({ ...prev, user: e }));
+            onChange((prev) => ({ ...prev, user: e as string }));
           },
           type: InputType.combobox,
           data: data,
@@ -127,7 +134,7 @@ function tableFilters(
           key: "email",
           l: "Цахим хаяг",
           onChange: (e) => {
-            onChange((prev: any) => ({ ...prev, email: e }));
+            onChange((prev) => ({ ...prev, email: e as string }));
           },
           type: InputType.email,
         },
@@ -136,7 +143,7 @@ function tableFilters(
           key: "phone",
           l: "Утасны дугаар",
           onChange: (e) => {
-            onChange((prev: any) => ({ ...prev, phone: e }));
+            onChange((prev) => ({ ...prev, phone: e as string }));
           },
           type: InputType.number,
         },
@@ -145,7 +152,7 @@ function tableFilters(
           l: "Үйлчилгээ",
           key: "service",
           onChange: (e) => {
-            onChange((prev: any) => ({ ...prev, service: e }));
+            onChange((prev) => ({ ...prev, service: e as string }));
           },
           data: [
             {
@@ -164,7 +171,7 @@ function tableFilters(
           l: "Огноо",
           key: "date",
           onChange: (e) => {
-            onChange((prev: any) => ({ ...prev, date: e }));
+            onChange((prev) => ({ ...prev, date: e as string }));
           },
           type: InputType.date,
         },
@@ -174,16 +181,27 @@ function tableFilters(
   return filters;
 }
 
-function tableFiltersComponents(
+function TableFiltersComponents(
   p: string,
-  filter: any,
-  onChange: Dispatch<any>,
+  filter:
+    | {
+        [key: string]: string;
+      }
+    | undefined,
+  onChange?: Dispatch<
+    SetStateAction<
+      | {
+          [key: string]: string;
+        }
+      | undefined
+    >
+  >,
   data?: { name: string; value: string | number }[]
 ) {
   const path = p.substring(1);
-  const filters = tableFilters(path, onChange, data);
-  const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("");
+  const filters = tableFilters(path, onChange!, data);
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState("");
   return filters.map((f, i) => {
     return (
       <div key={i}>
@@ -288,7 +306,7 @@ function tableFiltersComponents(
             setDate={(e) => {
               if (e) f.onChange(e);
             }}
-            date={filter?.[f.key] ?? undefined}
+            date={filter?.[f.key] ? new Date(filter?.[f.key]) : undefined}
           />
         )}
       </div>
@@ -298,7 +316,7 @@ function tableFiltersComponents(
 
 export const TableContainer = ({ children }: { children: ReactNode }) => {
   const pathname = usePathname();
-  const [filters, setFilters] = useState<any>();
+  const [filters, setFilters] = useState<{ [key: string]: string }>();
   const value = values(pathname);
   const path = pathname.substring(1).split("/")[0].split("?")[0];
   const data: { name: string; value: string | number }[] = [];
@@ -310,7 +328,7 @@ export const TableContainer = ({ children }: { children: ReactNode }) => {
       <div>
         <form action={`/${path}`}>
           <div className="flex items-end gap-4 mx-6 mb-8">
-            {tableFiltersComponents(pathname, filters, setFilters, data)}
+            {TableFiltersComponents(pathname, filters, setFilters, data)}
             <Button
               size={"lg"}
               onClick={() => changePathAction(`/${path}`, filters)}

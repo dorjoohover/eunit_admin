@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -52,8 +50,8 @@ export const removeFromObject = (obj: Record<string, string>): void =>
   });
 
 export const removeEmptyStringFields = (
-  obj: Record<string, any>
-): Record<string, any> => {
+  obj: Record<string, number | string>
+): Record<string, number | string> => {
   return Object.fromEntries(
     Object.entries(obj).filter(
       ([, value]) =>
@@ -70,15 +68,17 @@ export function formDataToObject(
 ): Record<string, string | string[]> {
   const obj: Record<string, string | string[]> = {};
 
-  formData.forEach((value: any, key) => {
-    if (obj.hasOwnProperty(key)) {
-      if (Array.isArray(obj[key])) {
-        (obj[key] as string[]).push(value);
+  formData.forEach((value, key) => {
+    if (typeof value === "string") {
+      if (obj.hasOwnProperty(key)) {
+        if (Array.isArray(obj[key])) {
+          (obj[key] as string[]).push(value);
+        } else {
+          obj[key] = [obj[key] as string, value];
+        }
       } else {
-        obj[key] = [obj[key] as string, value];
+        obj[key] = value;
       }
-    } else {
-      obj[key] = value;
     }
   });
 
@@ -93,16 +93,21 @@ export const navActive = (current: string, value: string) => {
 export const dateFormatter = (d: Date | string) => {
   const date = new Date(d);
   const year = date.getFullYear();
-  let month = `${date.getMonth()}`;
-  parseInt(month) < 10 ? (month = `0${month}`) : null;
+
+  let month = `${date.getMonth() + 1}`; // getMonth() is 0-based, so add 1
+  if (parseInt(month) < 10) month = `0${month}`;
+
   let day = `${date.getDate()}`;
-  parseInt(day) < 10 ? (day = `0${day}`) : null;
-  let hours = `${date.getHours() ?? "0"}`;
-  parseInt(hours) < 10 ? (hours = `0${hours}`) : null;
-  let minutes = `${date.getMinutes() ?? "0"}`;
-  parseInt(minutes) < 10 ? (minutes = `0${minutes}`) : null;
-  let seconds = `${date.getSeconds() ?? "0"}`;
-  parseInt(seconds) < 10 ? (seconds = `0${seconds}`) : null;
+  if (parseInt(day) < 10) day = `0${day}`;
+
+  let hours = `${date.getHours()}`;
+  if (parseInt(hours) < 10) hours = `0${hours}`;
+
+  let minutes = `${date.getMinutes()}`;
+  if (parseInt(minutes) < 10) minutes = `0${minutes}`;
+
+  let seconds = `${date.getSeconds()}`;
+  if (parseInt(seconds) < 10) seconds = `0${seconds}`;
 
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 };
@@ -122,14 +127,14 @@ export const replaceMediaUrl = (imageUrl?: string) => {
 export const replaceUploadingMediaUrl = (image: string) =>
   image.replace(`${MEDIA_URL}/original/`, "");
 
-export const getValueByPath = (obj: Record<string, any>, path: string): any => {
-  const keys = path.split(".");
+// export const getValueByPath = (obj: Record<string, any>, path: string): any => {
+//   const keys = path.split(".");
 
-  return keys.reduce(
-    (acc, key) => (acc && acc[key] !== undefined ? acc[key] : undefined),
-    obj
-  );
-};
+//   return keys.reduce(
+//     (acc, key) => (acc && acc[key] !== undefined ? acc[key] : undefined),
+//     obj
+//   );
+// };
 
 export function convertExcelFromBase64(
   base64Data: string,

@@ -15,7 +15,7 @@ const Page: FunctionComponent<UserPageProps> = async ({ searchParams }) => {
       <SalesTable
         services={data.data}
         totalPage={data.totalPage ?? 0}
-        currentPage={data.currentPage ?? 0}
+        currentPage={data.currentPage ?? `0`}
         total={data.total ?? 0}
       />
     </>

@@ -1,14 +1,14 @@
-import { ChipProps } from '@heroui/react';
+// import { ChipProps } from '@heroui/react';
 
-export const statusColorMap: Record<string, ChipProps['color']> = {
-  created: 'default',
-  pending: 'warning',
-  confirmed: 'success',
-  delivered: 'primary',
-  reordered: 'secondary',
-  cancelled: 'danger',
-  returned: 'danger'
-};
+// export const statusColorMap: Record<string, ChipProps['color']> = {
+//   created: 'default',
+//   pending: 'warning',
+//   confirmed: 'success',
+//   delivered: 'primary',
+//   reordered: 'secondary',
+//   cancelled: 'danger',
+//   returned: 'danger'
+// };
 
 export const isActiveMap: Record<string, string> = {
   true: 'Идэвхтэй',

@@ -1,4 +1,4 @@
-import { ServiceType, UserType } from "@/types";
+import { ServiceType } from "@/types";
 import { FunctionComponent, ReactNode } from "react";
 import { CustomTable } from ".";
 import { dateFormatter } from "@/lib/utils";

@@ -4,7 +4,6 @@ import * as React from "react";
 import {
   SidebarMenu,
   SidebarMenuItem,
-  SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
 import Image from "next/image";
