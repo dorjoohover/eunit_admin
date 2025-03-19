@@ -1,25 +1,22 @@
-import { CustomTable } from "@/components/tables";
-import { UserTable } from "@/components/tables/users";
-import { getUsers } from "@/services/user.service";
+import { SalesTable } from "@/components/tables/sales";
+import { getSales } from "@/services/sales.service";
 import { SearchParamsType } from "@/types";
 import { FunctionComponent } from "react";
 interface UserPageProps {
   searchParams: SearchParamsType;
 }
-const Page: FunctionComponent<UserPageProps> = async ({
-  searchParams,
-}) => {
+const Page: FunctionComponent<UserPageProps> = async ({ searchParams }) => {
   const filter = await searchParams;
 
-  const usersData = await getUsers(filter);
-
+  const data = await getSales(filter);
+  console.log(data);
   return (
     <>
-      <UserTable
-        users={usersData.data}
-        totalPage={usersData.totalPage}
-        currentPage={usersData.currentPage}
-        total={usersData.total}
+      <SalesTable
+        services={data.data}
+        totalPage={data.totalPage ?? 0}
+        currentPage={data.currentPage ?? 0}
+        total={data.total ?? 0}
       />
     </>
   );

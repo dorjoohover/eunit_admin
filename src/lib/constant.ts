@@ -16,6 +16,15 @@ export const Colors = {
   green: "#50CD89",
   // 224, 16%, 54%
   grey: "#78829D",
+  // 229, 95%, 57%
+  main: "#2850FA",
+};
+
+export const money = (value: string, currency = "") => {
+  return `${currency}${value
+    .replaceAll(",", "")
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
 };
 
 // xs: 12px
@@ -30,4 +39,17 @@ export enum InputType {
   text = 20,
   number = 30,
   date = 40,
+  select = 50,
+  combobox = 60,
+}
+
+// harna
+export enum PAYMENT {
+  QPAY = 1,
+  LOYALTY = 2,
+}
+
+export enum SERVICE {
+  REVIEW = 10,
+  DATA = 20,
 }

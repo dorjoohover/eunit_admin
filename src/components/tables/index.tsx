@@ -1,64 +1,25 @@
 "use client";
-import { FunctionComponent, ReactNode } from "react";
+import { FunctionComponent, ReactNode, useCallback } from "react";
 import {
   Table,
-  TableCaption,
   TableHeader,
   TableRow,
   TableHead,
   TableBody,
   TableCell,
-  TableFooter,
 } from "../ui/table";
-import { Button } from "../ui/button";
-import { IoFolderOpen } from "react-icons/io5";
-import { UserType } from "@/types";
 import { useSidebar } from "../ui/sidebar";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "../ui/pagination";
+import { usePathname, useSearchParams } from "next/navigation";
 
-const invoices = [
-  {
-    invoice: "INV001",
-    paymentStatus: "Paid",
-    totalAmount: "$250.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV002",
-    paymentStatus: "Pending",
-    totalAmount: "$150.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV003",
-    paymentStatus: "Unpaid",
-    totalAmount: "$350.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV004",
-    paymentStatus: "Paid",
-    totalAmount: "$450.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV005",
-    paymentStatus: "Paid",
-    totalAmount: "$550.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV006",
-    paymentStatus: "Pending",
-    totalAmount: "$200.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
-  },
-];
 interface CustomTableProps {
   headers: string[];
   rows: {
@@ -70,8 +31,21 @@ interface CustomTableProps {
     w?: number[];
   }[];
   totalPage: number;
-  currentPage: number;
+  currentPage: string;
   total: number;
+}
+function generateRange(n: number, totalPage: number) {
+  let page = n;
+  if (n == totalPage) page--;
+  let res = Array.from(
+    { length: Math.min(3, totalPage) },
+    (_, i) => page - 1 + i
+  );
+
+  if (res.includes(0)) {
+    res = res.map((r) => r + 1);
+  }
+  return res;
 }
 export const CustomTable: FunctionComponent<CustomTableProps> = ({
   headers,
@@ -81,6 +55,16 @@ export const CustomTable: FunctionComponent<CustomTableProps> = ({
   total,
 }) => {
   const { open } = useSidebar();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(name, value);
+      return params.toString();
+    },
+    [searchParams]
+  );
   return (
     <div
       className="px-8 pb-8"
@@ -160,6 +144,50 @@ export const CustomTable: FunctionComponent<CustomTableProps> = ({
           </TableRow>
         </TableFooter> */}
       </Table>
+      <Pagination>
+        <PaginationContent>
+          {+currentPage > 1 && (
+            <PaginationItem>
+              <PaginationPrevious
+                href={
+                  pathname +
+                  "?" +
+                  createQueryString("page", `${+currentPage - 1}`)
+                }
+              />
+            </PaginationItem>
+          )}
+          {generateRange(+currentPage, totalPage).map((page) => {
+            return (
+              <PaginationItem key={page}>
+                <PaginationLink
+                  href={pathname + "?" + createQueryString("page", `${page}`)}
+                  isActive={page == +currentPage}
+                >
+                  {page}
+                </PaginationLink>
+              </PaginationItem>
+            );
+          })}
+
+          {totalPage - +currentPage > 3 && (
+            <PaginationItem>
+              <PaginationEllipsis />
+            </PaginationItem>
+          )}
+          {totalPage != +currentPage && totalPage != 0 && (
+            <PaginationItem>
+              <PaginationNext
+                href={
+                  pathname +
+                  "?" +
+                  createQueryString("page", `${+currentPage + 1}`)
+                }
+              />
+            </PaginationItem>
+          )}
+        </PaginationContent>
+      </Pagination>
     </div>
   );
 };

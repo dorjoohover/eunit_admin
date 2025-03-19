@@ -21,7 +21,7 @@ export type ApiResponseType<T> = {
   data: T;
   total: number;
   totalPage: number;
-  currentPage: number;
+  currentPage: string;
   status?: number;
   errors?: FieldErrorType[];
 };

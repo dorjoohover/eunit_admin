@@ -1,4 +1,3 @@
-import { CustomTable } from "@/components/tables";
 import { UserTable } from "@/components/tables/users";
 import { getUsers } from "@/services/user.service";
 import { SearchParamsType } from "@/types";
@@ -12,7 +11,6 @@ const UsersPage: FunctionComponent<UserPageProps> = async ({
   const filter = await searchParams;
 
   const usersData = await getUsers(filter);
-
   return (
     <>
       <UserTable

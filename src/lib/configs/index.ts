@@ -6,5 +6,4 @@ export * from './merchant.configs';
 export * from './brand.configs';
 export * from './category.configs';
 export * from './supplier.configs';
-export * from './global.configs';
 export * from './featured.configs';

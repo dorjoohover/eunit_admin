@@ -6,7 +6,7 @@ import { dateFormatter } from "@/lib/utils";
 interface UserTableProps {
   users: UserType[];
   totalPage: number;
-  currentPage: number;
+  currentPage: string;
   total: number;
 }
 
@@ -14,10 +14,10 @@ function giveNameToRow(type: string) {
   let name = "";
   switch (type) {
     case "lastname":
-      name = "Хэрэглэгчийн овог:";
+      name = "Овог:";
       break;
     case "firstname":
-      name = "Хэрэглэгчийн нэр:";
+      name = "Нэр:";
       break;
     case "email":
       name = "Цахим хаяг:";

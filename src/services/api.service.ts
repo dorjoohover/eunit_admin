@@ -13,7 +13,7 @@ const createRequestConfig = (
     method,
     headers: {
       "Content-Type": "application/json",
-      Cookie: session,
+      Authorization: `Bearer ${session ?? ""}`,
     },
   };
 
@@ -26,13 +26,12 @@ const createRequestConfig = (
 
 const createUrl = (endpoint: string, filter?: SearchParamsFilterType): URL => {
   const url = new URL(`${API_URL}${endpoint}`);
-
   if (filter) {
     Object.entries(filter).forEach(([key, value]) => {
       if (key === "page" || key === "limit") {
         url.searchParams.append(key, String(value));
       } else {
-        url.searchParams.append(`filter[${key}]`, String(value));
+        url.searchParams.append(`${key}`, String(value));
       }
     });
   }
@@ -44,7 +43,7 @@ async function processResponse<T>(
   response: Response
 ): Promise<ApiResponseType<T>> {
   const successResponse = await response.json();
-
+  return successResponse?.payload || successResponse || ([] as T)
   return {
     data: successResponse?.payload || successResponse || ([] as T),
     total: successResponse?.total || 0,
@@ -64,7 +63,7 @@ async function request<T>(
 ): Promise<ApiResponseType<T>> {
   const cookieStore = await cookies();
 
-  const session = cookieStore.get("session")?.value?.replace(",", "; ") || "";
+  const session = cookieStore.get("token")?.value?.replace(",", "; ") || "";
 
   const url = createUrl(endpoint, options?.filter);
   const config = createRequestConfig(method, session, options?.body);
@@ -73,7 +72,7 @@ async function request<T>(
     data: [] as T,
     total: 0,
     totalPage: 0,
-    currentPage: 0,
+    currentPage: `${0}`,
   };
 
   try {
@@ -97,11 +96,7 @@ export const apiService = {
     resource: string,
     filter?: SearchParamsFilterType
   ): Promise<ApiResponseType<T>> {
-    const supplierId = (await getCookie("token"))?.value || "";
-
-    // const extendedFilter = { limit: 10, supplierId, ...filter };
-    const extendedFilter = {  supplierId, ...filter };
-
+    const extendedFilter = { limit: 10, page: 1, ...filter };
     return request<T>(resource, "GET", {
       filter: removeEmptyStringFields(extendedFilter),
     });

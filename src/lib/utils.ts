@@ -86,12 +86,12 @@ export function formDataToObject(
 }
 
 export const navActive = (current: string, value: string) => {
-  let path = current.substring(1);
+  const path = current.substring(1);
   return path == value;
 };
 
 export const dateFormatter = (d: Date | string) => {
-  let date = new Date(d);
+  const date = new Date(d);
   const year = date.getFullYear();
   let month = `${date.getMonth()}`;
   parseInt(month) < 10 ? (month = `0${month}`) : null;

@@ -1,12 +1,14 @@
-import { UserType } from "@/types";
+import { ServiceType, UserType } from "@/types";
 import { FunctionComponent, ReactNode } from "react";
 import { CustomTable } from ".";
 import { dateFormatter } from "@/lib/utils";
+import { money, PAYMENT, SERVICE } from "@/lib/constant";
+import { IoFolderOpen } from "react-icons/io5";
 
-interface UserTableProps {
-  users: UserType[];
+interface SalesTableProps {
+  services: ServiceType[];
   totalPage: number;
-  currentPage: number;
+  currentPage: string;
   total: number;
 }
 
@@ -14,10 +16,10 @@ function giveNameToRow(type: string) {
   let name = "";
   switch (type) {
     case "lastname":
-      name = "Хэрэглэгчийн овог:";
+      name = "Овог:";
       break;
     case "firstname":
-      name = "Хэрэглэгчийн нэр:";
+      name = "Нэр:";
       break;
     case "email":
       name = "Цахим хаяг:";
@@ -32,7 +34,32 @@ function giveNameToRow(type: string) {
   return name;
 }
 
-function userFormatter(user: UserType): {
+function bg(payment: number) {
+  switch (payment) {
+    case PAYMENT.QPAY:
+      return "green";
+    case PAYMENT.LOYALTY:
+      return "blue";
+    case SERVICE.REVIEW:
+      return "green";
+    case SERVICE.DATA:
+      return "blue";
+  }
+}
+function text(payment: number) {
+  switch (payment) {
+    case PAYMENT.QPAY:
+      return "Qpay";
+    case PAYMENT.LOYALTY:
+      return "Loyalty";
+    case SERVICE.REVIEW:
+      return "Лавлагаа авсан";
+    case SERVICE.DATA:
+      return "Дата мэдээлэл";
+  }
+}
+
+function serviceFormatter(service: ServiceType): {
   data: {
     texts?: {
       text?: string;
@@ -44,68 +71,98 @@ function userFormatter(user: UserType): {
   title?: string[];
   w?: number[];
 } {
-  const titles = ["lastname", "firstname", "email", "phone", "total"].map((t) =>
-    giveNameToRow(t)
-  );
+  const titles = [
+    "lastname",
+    "firstname",
+    "email",
+    "phone",
+    "price",
+    "method",
+    "date",
+  ].map((t) => giveNameToRow(t));
   return {
     data: [
       {
         texts: [
           {
-            text: user.lastname ?? "Байхгүй",
+            text: service?.user?.lastname ?? "Байхгүй",
             title: giveNameToRow("lastname"),
           },
           {
-            text: user.firstname ?? user.name ?? "Байхгүй",
+            text: service?.user?.firstname ?? service?.user?.name ?? "Байхгүй",
             title: giveNameToRow("firstname"),
           },
         ],
       },
       {
         texts: [
-          { text: user.email ?? "Байхгүй", title: giveNameToRow("email") },
-        ],
-      },
-      {
-        texts: [
           {
-            text: user.phone?.replace("+976", ""),
+            text: service?.user?.email ?? "Байхгүй",
+            title: giveNameToRow("email"),
+          },
+          {
+            text: service?.user?.phone?.replace("+976", ""),
             title: giveNameToRow("phone"),
           },
         ],
       },
+
       {
-        texts: [{ text: "2,000.00 ₮", title: giveNameToRow("total") }],
+        texts: [
+          {
+            text: `${money(`${Math.abs(service.price)}`)}₮`,
+            title: giveNameToRow("total"),
+            item: (
+              <div
+                className={`w-[60px] text-center rounded-xl text-white py-1 bg-${bg(
+                  service.method
+                )}`}
+              >
+                {text(service.method)}
+              </div>
+            ),
+          },
+        ],
       },
       {
-        texts: [{ title: dateFormatter(user.createdAt) }],
+        texts: [{ title: dateFormatter(service?.date ?? "") }],
+      },
+      {
+        children: (
+          <div
+            className={`bg-${bg(
+              service.type
+            )} font-semibold flex text-sm text-white rounded-[50px] px-4 py-2`}
+          >
+            <IoFolderOpen size={20} />
+            <p className="text-nowrap ml-2">{text(service.type)}</p>
+          </div>
+        ),
       },
     ],
     title: titles,
-    w: [300, 250, 150, 200, 250],
+    w: [300, 300, 250, 250, 200],
   };
 }
 
-export const UserTable: FunctionComponent<UserTableProps> = ({
-  users,
+export const SalesTable: FunctionComponent<SalesTableProps> = ({
+  services,
   totalPage,
   currentPage,
   total,
 }) => {
   const headers = [
-    "Овог, нэр",
-
-    "Цахим хаяг",
-    "Утасны дугаар",
-    "Нийт худалдан авалт",
-
-    "Бүртгүүлсэн огноо",
+    "Хэрэглэгч",
+    "Холбогдох мэдээлэл",
+    "Төлбөр төлөлт",
+    "Огноо",
+    "Үйлчилгээ",
   ];
   return (
     <CustomTable
       headers={headers}
-      rows={users.map((user) => {
-        return userFormatter(user);
+      rows={services.map((service) => {
+        return serviceFormatter(service);
       })}
       currentPage={currentPage}
       total={total}

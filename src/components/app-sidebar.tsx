@@ -2,23 +2,12 @@
 
 import * as React from "react";
 import {
-  AudioWaveform,
   BarChart,
-  BookOpen,
-  Bot,
-  Command,
   Crown,
   Database,
-  Frame,
-  GalleryVerticalEnd,
   Gift,
-  Map,
   MoreHorizontal,
   Package,
-  PieChart,
-  Settings2,
-  SquareTerminal,
-  Users,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -31,13 +20,11 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-  SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { TeamSwitcher } from "./team-switcher";
 import { IoCashOutline } from "react-icons/io5";
 import { FiUsers } from "react-icons/fi";
 import { NavProducts } from "./nav-products";
-// This is sample data.
 const data = {
   user: {
     name: "shadcn",

@@ -1,5 +1,3 @@
-import LoginForm from '@/components/auth/LoginForm';
-import CoreImage from '@/components/core/CoreImage';
 // import { Card, CardBody, CardHeader } from '@heroui/react';
 
 function LoginPage() {

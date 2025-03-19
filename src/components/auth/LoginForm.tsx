@@ -1,32 +1,27 @@
-'use client';
+"use client";
 
-import { loginAction } from '@/app/actions/auth';
-
-import { useState } from 'react';
+import { useState } from "react";
 
 // import { Card, CardBody, Form, Input } from "@heroui/react";
 // import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
-import CoreSubmitButton from '@/components/core/CoreSubmitButton';
-import { tr } from '@/lib/utils';
-import { errorMessageMap } from '@/lib/configs';
 
 function LoginForm() {
-  const [message, setMessage] = useState<string>('');
-  const [isVisible, setIsVisible] = useState<boolean>(false);
+  // const [message, setMessage] = useState<string>("");
+  // const [isVisible, setIsVisible] = useState<boolean>(false);
 
-  const toggleVisibility = () => setIsVisible(!isVisible);
+  // const toggleVisibility = () => setIsVisible(!isVisible);
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  // const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
 
-    const formData = new FormData(e.currentTarget);
+  //   const formData = new FormData(e.currentTarget);
 
-    const { message } = await loginAction(formData);
+  //   // const { message } = await loginAction(formData);
 
-    if (message) {
-      setMessage(message);
-    }
-  };
+  //   if (message) {
+  //     setMessage(message);
+  //   }
+  // };
 
   // const passwordEndContent = (
   //   <div onClick={toggleVisibility} className='cursor-pointer'>
