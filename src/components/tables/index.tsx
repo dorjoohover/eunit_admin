@@ -18,7 +18,15 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "../ui/pagination";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 interface CustomTableProps {
   headers: string[];
@@ -36,6 +44,7 @@ interface CustomTableProps {
 }
 function generateRange(n: number, totalPage: number) {
   let page = n;
+  if (totalPage == 1) return [1];
   if (n == totalPage) page--;
   let res = Array.from(
     { length: Math.min(3, totalPage) },
@@ -57,6 +66,7 @@ export const CustomTable: FunctionComponent<CustomTableProps> = ({
   const { open } = useSidebar();
   const searchParams = useSearchParams();
   const pathname = usePathname();
+  const router = useRouter();
   const createQueryString = useCallback(
     (name: string, value: string) => {
       const params = new URLSearchParams(searchParams.toString());
@@ -141,50 +151,75 @@ export const CustomTable: FunctionComponent<CustomTableProps> = ({
           </TableRow>
         </TableFooter> */}
       </Table>
-      <Pagination>
-        <PaginationContent>
-          {+currentPage > 1 && (
-            <PaginationItem>
-              <PaginationPrevious
-                href={
-                  pathname +
-                  "?" +
-                  createQueryString("page", `${+currentPage - 1}`)
-                }
-              />
-            </PaginationItem>
-          )}
-          {generateRange(+currentPage, totalPage).map((page) => {
-            return (
-              <PaginationItem key={page}>
-                <PaginationLink
-                  href={pathname + "?" + createQueryString("page", `${page}`)}
-                  isActive={page == +currentPage}
-                >
-                  {page}
-                </PaginationLink>
+      <div className="flex space-between items-center">
+        <span></span>
+        <Pagination>
+          <PaginationContent>
+            {+currentPage > 1 && (
+              <PaginationItem>
+                <PaginationPrevious
+                  href={
+                    pathname +
+                    "?" +
+                    createQueryString("page", `${+currentPage - 1}`)
+                  }
+                />
               </PaginationItem>
-            );
-          })}
+            )}
+            {generateRange(+currentPage, totalPage).map((page) => {
+              return (
+                <PaginationItem key={page}>
+                  <PaginationLink
+                    href={pathname + "?" + createQueryString("page", `${page}`)}
+                    isActive={page == +currentPage}
+                  >
+                    {page}
+                  </PaginationLink>
+                </PaginationItem>
+              );
+            })}
 
-          {totalPage - +currentPage > 3 && (
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-          )}
-          {totalPage != +currentPage && totalPage != 0 && (
-            <PaginationItem>
-              <PaginationNext
-                href={
-                  pathname +
-                  "?" +
-                  createQueryString("page", `${+currentPage + 1}`)
-                }
-              />
-            </PaginationItem>
-          )}
-        </PaginationContent>
-      </Pagination>
+            {totalPage - +currentPage > 3 && (
+              <PaginationItem>
+                <PaginationEllipsis />
+              </PaginationItem>
+            )}
+            {totalPage != +currentPage && totalPage != 0 && (
+              <PaginationItem>
+                <PaginationNext
+                  href={
+                    pathname +
+                    "?" +
+                    createQueryString("page", `${+currentPage + 1}`)
+                  }
+                />
+              </PaginationItem>
+            )}
+          </PaginationContent>
+        </Pagination>
+        <Select
+          onValueChange={(e) => {
+            router.push(
+              pathname + "?" + createQueryString("limit", `${+e}`)
+            );
+          }}
+        >
+          <SelectTrigger className="w-[100px]">
+            <SelectValue placeholder={searchParams.get('limit') ?? 10}/>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {[5, 10, 25, 50].map((r, i) => {
+                return (
+                  <SelectItem value={`${r}`} key={i}>
+                    {r}
+                  </SelectItem>
+                );
+              })}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>
     </div>
   );
 };

@@ -1,10 +1,10 @@
 import { UserType } from "./user.types";
 
-export type ServiceType = {
+export type SaleType = {
   id: number;
   user: UserType;
-  price: number;
+  point: number;
   method: number;
-  date: Date | string;
-  type: number;
+  createdAt: Date | string;
+  paymentType: number;
 };

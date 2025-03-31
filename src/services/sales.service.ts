@@ -2,9 +2,13 @@ import { apiService } from "@/services";
 import { ApiResponseType, SearchParamsFilterType, ServiceType } from "@/types";
 
 export async function getSales(
-  filter: SearchParamsFilterType
+  filter: SearchParamsFilterType,
+  all = 0
 ): Promise<ApiResponseType<ServiceType[]>> {
-  return apiService.getList<ServiceType[]>("/request", filter);
+  return apiService.getList<ServiceType[]>(
+    `/payment/transactions/${all}`,
+    filter
+  );
 }
 
 export async function getSale<ServiceType>(id: string) {

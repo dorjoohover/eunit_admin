@@ -14,4 +14,5 @@ export type UserType = {
   status?: number;
   phoneStatus?: number;
   emailStatus?: number;
+  totalPrice?: number;
 };

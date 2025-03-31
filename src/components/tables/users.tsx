@@ -2,6 +2,7 @@ import { UserType } from "@/types";
 import { FunctionComponent, ReactNode } from "react";
 import { CustomTable } from ".";
 import { dateFormatter } from "@/lib/utils";
+import { money } from "@/lib/constant";
 
 interface UserTableProps {
   users: UserType[];
@@ -75,7 +76,12 @@ function userFormatter(user: UserType): {
         ],
       },
       {
-        texts: [{ text: "2,000.00 ₮", title: giveNameToRow("total") }],
+        texts: [
+          {
+            text: `${money(Math.abs(user.totalPrice ?? 0)?.toString())}₮`,
+            title: giveNameToRow("total"),
+          },
+        ],
       },
       {
         texts: [{ title: dateFormatter(user.createdAt) }],

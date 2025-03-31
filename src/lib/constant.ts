@@ -50,6 +50,6 @@ export enum PAYMENT {
 }
 
 export enum SERVICE {
-  REVIEW = 10,
-  DATA = 20,
+  REVIEW = 20,
+  DATA = 30,
 }

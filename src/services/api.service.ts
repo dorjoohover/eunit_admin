@@ -76,6 +76,7 @@ async function request<T>(
   };
 
   try {
+    console.log(url)
     const response = await fetch(url, config);
     if (!response.ok) {
       return {

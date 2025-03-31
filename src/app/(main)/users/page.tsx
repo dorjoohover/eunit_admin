@@ -10,7 +10,8 @@ const UsersPage: FunctionComponent<UserPageProps> = async ({
 }) => {
   const filter = await searchParams;
 
-  const usersData = await getUsers(filter);
+  const usersData = await getUsers({ ...filter });
+  console.log(usersData);
   return (
     <>
       <UserTable

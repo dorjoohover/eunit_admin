@@ -5,7 +5,7 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Dispatch, ReactNode, SetStateAction, useState } from "react";
 import { usePathname } from "next/navigation";
-import { InputType, SERVICE } from "@/lib/constant";
+import { InputType, PAYMENT, SERVICE } from "@/lib/constant";
 import { DatePicker } from "./DatePicker";
 import {
   Select,
@@ -56,8 +56,7 @@ function tableFilters(
         }
       | undefined
     >
-  >,
-  data?: { value: string | number; name: string }[]
+  >
 ) {
   let filters: {
     pl: string;
@@ -70,15 +69,6 @@ function tableFilters(
   switch (path) {
     case "users":
       filters = [
-        {
-          pl: "Овог",
-          l: "Овог",
-          onChange: (e) => {
-            onChange((prev) => ({ ...prev, lastname: e as string }));
-          },
-          key: "lastname",
-          type: InputType.text,
-        },
         {
           pl: "Нэр",
           l: "Нэр",
@@ -107,6 +97,25 @@ function tableFilters(
           type: InputType.number,
         },
         {
+          pl: "Төлбөрийн хэлбэр",
+          l: "Хэлбэр",
+          onChange: (e) => {
+            onChange((prev) => ({ ...prev, method: e as string }));
+          },
+          key: "method",
+          type: InputType.select,
+          data: [
+            {
+              name: "QPay",
+              value: PAYMENT.QPAY,
+            },
+            {
+              name: "Loyalty",
+              value: PAYMENT.LOYALTY,
+            },
+          ],
+        },
+        {
           pl: "Огноо",
           key: "date",
           l: "Огноо",
@@ -119,16 +128,6 @@ function tableFilters(
       break;
     case "sales":
       filters = [
-        {
-          pl: "Хэрэглэгч",
-          l: "Хэрэглэгч",
-          key: "user",
-          onChange: (e) => {
-            onChange((prev) => ({ ...prev, user: e as string }));
-          },
-          type: InputType.combobox,
-          data: data,
-        },
         {
           pl: "Цахим хаяг",
           key: "email",
@@ -167,6 +166,25 @@ function tableFilters(
           type: InputType.select,
         },
         {
+          pl: "Төлбөрийн хэлбэр",
+          l: "Төлбөрийн хэлбэр",
+          key: "payment",
+          onChange: (e) => {
+            onChange((prev) => ({ ...prev, payment: e as string }));
+          },
+          type: InputType.select,
+          data: [
+            {
+              name: "qpay",
+              value: PAYMENT.QPAY,
+            },
+            {
+              name: "Loyalty",
+              value: PAYMENT.LOYALTY,
+            },
+          ],
+        },
+        {
           pl: "Огноо",
           l: "Огноо",
           key: "date",
@@ -195,11 +213,10 @@ function TableFiltersComponents(
         }
       | undefined
     >
-  >,
-  data?: { name: string; value: string | number }[]
+  >
 ) {
   const path = p.substring(1);
-  const filters = tableFilters(path, onChange!, data);
+  const filters = tableFilters(path, onChange!);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
   return filters.map((f, i) => {
@@ -319,7 +336,7 @@ export const TableContainer = ({ children }: { children: ReactNode }) => {
   const [filters, setFilters] = useState<{ [key: string]: string }>();
   const value = values(pathname);
   const path = pathname.substring(1).split("/")[0].split("?")[0];
-  const data: { name: string; value: string | number }[] = [];
+  // const data: { name: string; value: string | number }[] = [];
   return (
     <div className="mx-6 my-5 rounded-md bg-white  ">
       <div className="px-8 py-6 mb-3  border-b">
@@ -328,7 +345,7 @@ export const TableContainer = ({ children }: { children: ReactNode }) => {
       <div>
         <form action={`/${path}`}>
           <div className="flex items-end gap-4 mx-6 mb-8">
-            {TableFiltersComponents(pathname, filters, setFilters, data)}
+            {TableFiltersComponents(pathname, filters, setFilters)}
             <Button
               size={"lg"}
               onClick={() => changePathAction(`/${path}`, filters)}

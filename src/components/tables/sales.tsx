@@ -1,4 +1,4 @@
-import { ServiceType } from "@/types";
+import { SaleType } from "@/types";
 import { FunctionComponent, ReactNode } from "react";
 import { CustomTable } from ".";
 import { dateFormatter } from "@/lib/utils";
@@ -6,7 +6,7 @@ import { money, PAYMENT, SERVICE } from "@/lib/constant";
 import { IoFolderOpen } from "react-icons/io5";
 
 interface SalesTableProps {
-  services: ServiceType[];
+  services: SaleType[];
   totalPage: number;
   currentPage: string;
   total: number;
@@ -59,7 +59,7 @@ function text(payment: number) {
   }
 }
 
-function serviceFormatter(service: ServiceType): {
+function serviceFormatter(service: SaleType): {
   data: {
     texts?: {
       text?: string;
@@ -76,9 +76,9 @@ function serviceFormatter(service: ServiceType): {
     "firstname",
     "email",
     "phone",
-    "price",
+    "point",
     "method",
-    "date",
+    "createdAt",
   ].map((t) => giveNameToRow(t));
   return {
     data: [
@@ -110,7 +110,7 @@ function serviceFormatter(service: ServiceType): {
       {
         texts: [
           {
-            text: `${money(`${Math.abs(service.price)}`)}₮`,
+            text: `${money(`${Math.abs(service.point)}`)}₮`,
             title: giveNameToRow("total"),
             item: (
               <div
@@ -125,17 +125,17 @@ function serviceFormatter(service: ServiceType): {
         ],
       },
       {
-        texts: [{ title: dateFormatter(service?.date ?? "") }],
+        texts: [{ title: dateFormatter(service?.createdAt ?? "") }],
       },
       {
         children: (
           <div
             className={`bg-${bg(
-              service.type
+              service.paymentType
             )} font-semibold flex text-sm text-white rounded-[50px] px-4 py-2`}
           >
             <IoFolderOpen size={20} />
-            <p className="text-nowrap ml-2">{text(service.type)}</p>
+            <p className="text-nowrap ml-2">{text(service.paymentType)}</p>
           </div>
         ),
       },
