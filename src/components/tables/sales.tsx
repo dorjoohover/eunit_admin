@@ -115,10 +115,10 @@ function serviceFormatter(service: SaleType): {
             item: (
               <div
                 className={`w-[60px] text-center rounded-xl text-white py-1 bg-${bg(
-                  service.method
+                  service.paymentType
                 )}`}
               >
-                {text(service.method)}
+                {text(service.paymentType)}
               </div>
             ),
           },
@@ -131,11 +131,11 @@ function serviceFormatter(service: SaleType): {
         children: (
           <div
             className={`bg-${bg(
-              service.paymentType
+              service?.request?.service
             )} font-semibold flex text-sm text-white rounded-[50px] px-4 py-2`}
           >
             <IoFolderOpen size={20} />
-            <p className="text-nowrap ml-2">{text(service.paymentType)}</p>
+            <p className="text-nowrap ml-2">{text(service?.request?.service)}</p>
           </div>
         ),
       },
