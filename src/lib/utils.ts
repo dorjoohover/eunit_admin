@@ -89,27 +89,24 @@ export const navActive = (current: string, value: string) => {
   const path = current.substring(1);
   return path == value;
 };
-
 export const dateFormatter = (d: Date | string) => {
   const date = new Date(d);
-  const year = date.getFullYear();
 
-  let month = `${date.getMonth() + 1}`; // getMonth() is 0-based, so add 1
-  if (parseInt(month) < 10) month = `0${month}`;
+  // Convert to Mongolia time (UTC+8)
+  const options: Intl.DateTimeFormatOptions = {
+    timeZone: "Asia/Ulaanbaatar",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false, // 24-hour format
+  };
 
-  let day = `${date.getDate()}`;
-  if (parseInt(day) < 10) day = `0${day}`;
-
-  let hours = `${date.getHours()}`;
-  if (parseInt(hours) < 10) hours = `0${hours}`;
-
-  let minutes = `${date.getMinutes()}`;
-  if (parseInt(minutes) < 10) minutes = `0${minutes}`;
-
-  let seconds = `${date.getSeconds()}`;
-  if (parseInt(seconds) < 10) seconds = `0${seconds}`;
-
-  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  return new Intl.DateTimeFormat("mn-MN", options)
+    .format(date)
+    .replace(/\//g, "-"); // Ensure YYYY-MM-DD format
 };
 
 export const replaceMediaUrl = (imageUrl?: string) => {

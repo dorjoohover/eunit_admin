@@ -113,13 +113,15 @@ function serviceFormatter(service: SaleType): {
             text: `${money(`${Math.abs(service.point)}`)}₮`,
             title: giveNameToRow("total"),
             item: (
-              <div
+              <a
                 className={`w-[60px] text-center rounded-xl text-white py-1 bg-${bg(
                   service.paymentType
                 )}`}
+                target="_blank"
+                href={`https://www.eunit.mn/report/result?id=${service.request.id}`}
               >
                 {text(service.paymentType)}
-              </div>
+              </a>
             ),
           },
         ],
@@ -135,7 +137,9 @@ function serviceFormatter(service: SaleType): {
             )} font-semibold flex text-sm text-white rounded-[50px] px-4 py-2`}
           >
             <IoFolderOpen size={20} />
-            <p className="text-nowrap ml-2">{text(service?.request?.service)}</p>
+            <p className="text-nowrap ml-2">
+              {text(service?.request?.service)}
+            </p>
           </div>
         ),
       },
