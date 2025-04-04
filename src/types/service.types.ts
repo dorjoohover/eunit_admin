@@ -3,6 +3,7 @@ import { UserType } from "./user.types";
 export type RequestType = {
   id: number;
   service: number;
+  status: number;
 };
 
 export type SaleType = {

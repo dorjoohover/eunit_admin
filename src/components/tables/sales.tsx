@@ -114,11 +114,14 @@ function serviceFormatter(service: SaleType): {
             title: giveNameToRow("total"),
             item: (
               <a
-                className={`w-[60px] text-center rounded-xl text-white py-1 bg-${bg(
-                  service.paymentType
-                )}`}
+                className={`w-[60px] text-center rounded-xl ${
+                  service.request?.status == 10 && "text-white"
+                } py-1 ${
+                  service.request?.status == 10 &&
+                  `bg-${bg(service.paymentType)}`
+                }`}
                 target="_blank"
-                href={`https://www.eunit.mn/report/result?id=${service.request.id}`}
+                href={`https://www.eunit.mn/report/result?id=${service.request?.id}`}
               >
                 {text(service.paymentType)}
               </a>

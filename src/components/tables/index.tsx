@@ -27,6 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { ChevronsLeft, ChevronsRight } from "lucide-react";
 
 interface CustomTableProps {
   headers: string[];
@@ -106,7 +107,12 @@ export const CustomTable: FunctionComponent<CustomTableProps> = ({
                 <CustomTableCell
                   texts={[
                     {
-                      text: `${i + 1}`,
+                      text: `${
+                        (+currentPage - 1) *
+                          +(searchParams.get("limit") ?? "10") +
+                        i +
+                        1
+                      }`,
                     },
                   ]}
                 />
@@ -157,6 +163,16 @@ export const CustomTable: FunctionComponent<CustomTableProps> = ({
           <PaginationContent>
             {+currentPage > 1 && (
               <PaginationItem>
+                <PaginationLink
+                  href={pathname + "?" + createQueryString("page", `1`)}
+                  // isActive={ }
+                >
+                  <ChevronsLeft className="h-4 w-4" />
+                </PaginationLink>
+              </PaginationItem>
+            )}
+            {+currentPage > 1 && (
+              <PaginationItem>
                 <PaginationPrevious
                   href={
                     pathname +
@@ -195,21 +211,31 @@ export const CustomTable: FunctionComponent<CustomTableProps> = ({
                 />
               </PaginationItem>
             )}
+            {totalPage != +currentPage && totalPage != 0 && (
+              <PaginationItem>
+                <PaginationLink
+                  href={
+                    pathname + "?" + createQueryString("page", `${totalPage}`)
+                  }
+                  // isActive={ }
+                >
+                  <ChevronsRight className="h-4 w-4" />
+                </PaginationLink>
+              </PaginationItem>
+            )}
           </PaginationContent>
         </Pagination>
         <Select
           onValueChange={(e) => {
-            router.push(
-              pathname + "?" + createQueryString("limit", `${+e}`)
-            );
+            router.push(pathname + "?" + createQueryString("limit", `${+e}`));
           }}
         >
           <SelectTrigger className="w-[100px]">
-            <SelectValue placeholder={searchParams.get('limit') ?? 10}/>
+            <SelectValue placeholder={searchParams.get("limit") ?? 10} />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              {[5, 10, 25, 50].map((r, i) => {
+              {[5, 10, 25, 50, 100].map((r, i) => {
                 return (
                   <SelectItem value={`${r}`} key={i}>
                     {r}
