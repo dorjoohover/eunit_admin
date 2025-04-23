@@ -78,6 +78,7 @@ function serviceFormatter(service: SaleType): {
     "phone",
     "point",
     "method",
+    "category",
     "createdAt",
   ].map((t) => giveNameToRow(t));
   return {
@@ -85,11 +86,14 @@ function serviceFormatter(service: SaleType): {
       {
         texts: [
           {
-            text: service?.user?.lastname ?? "Байхгүй",
+            text: service?.user?.lastname?.toString() ?? "Байхгүй",
             title: giveNameToRow("lastname"),
           },
           {
-            text: service?.user?.firstname ?? service?.user?.name ?? "Байхгүй",
+            text:
+              service?.user?.firstname?.toString() ??
+              service?.user?.name ??
+              "Байхгүй",
             title: giveNameToRow("firstname"),
           },
         ],
@@ -101,7 +105,7 @@ function serviceFormatter(service: SaleType): {
             title: giveNameToRow("email"),
           },
           {
-            text: service?.user?.phone?.replace("+976", ""),
+            text: service?.user?.phone?.replace("+976", "") ?? "Байхгүй",
             title: giveNameToRow("phone"),
           },
         ],
@@ -121,7 +125,9 @@ function serviceFormatter(service: SaleType): {
                   `bg-${bg(service.paymentType)}`
                 }`}
                 target="_blank"
-                href={`https://www.eunit.mn/report/result?id=${service.request?.id}`}
+                href={`https://www.eunit.mn/${
+                  service.request?.area != undefined ? "report" : "car"
+                }/result?id=${service.request?.id}`}
               >
                 {text(service.paymentType)}
               </a>
@@ -131,6 +137,14 @@ function serviceFormatter(service: SaleType): {
       },
       {
         texts: [{ title: dateFormatter(service?.createdAt ?? "") }],
+      },
+      {
+        texts: [
+          {
+            title:
+              service.request?.area != undefined ? "Орон сууц" : "Автомашин",
+          },
+        ],
       },
       {
         children: (
@@ -148,7 +162,7 @@ function serviceFormatter(service: SaleType): {
       },
     ],
     title: titles,
-    w: [300, 300, 250, 250, 200],
+    w: [200, 250, 300, 250, 250, 200],
   };
 }
 
@@ -163,6 +177,7 @@ export const SalesTable: FunctionComponent<SalesTableProps> = ({
     "Холбогдох мэдээлэл",
     "Төлбөр төлөлт",
     "Огноо",
+    "Төрөл",
     "Үйлчилгээ",
   ];
   return (
