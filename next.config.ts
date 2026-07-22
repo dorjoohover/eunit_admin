@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: "standalone",
   env: {
     API_URL: process.env.API_URL,
     // MEDIA_URL: process.env.MEDIA_URL,
