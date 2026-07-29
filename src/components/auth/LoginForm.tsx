@@ -7,7 +7,8 @@ import { loginAction } from '@/app/actions/auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { errorMessageMap, tr } from '@/lib/utils';
+import { errorMessageMap } from '@/lib/configs/global.configs';
+import { tr } from '@/lib/utils';
 
 function LoginForm() {
   const [message, setMessage] = useState<string>('');
