@@ -7,9 +7,6 @@ import "swiper/css/navigation";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import { ThemeProvider } from "@/providers/theme-provider";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/app-sidebar";
-import { cn } from "@/lib/utils";
 import { Inter } from "next/font/google";
 export const metadata: Metadata = {
   title: "Eunit",
@@ -24,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>
+      <body className={inter.className}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -33,10 +30,7 @@ export default function RootLayout({
           forcedTheme="light"
         >
           <ToastContainer className="text-xs" />
-          <SidebarProvider>
-            <AppSidebar />
-            <main className={cn("w-full", inter.className)}>{children}</main>
-          </SidebarProvider>
+          {children}
         </ThemeProvider>
       </body>
     </html>

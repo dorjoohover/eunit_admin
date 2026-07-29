@@ -3,6 +3,7 @@ import { API_URL, MEDIA_UPLOAD } from "@/lib/configs";
 import { removeEmptyStringFields } from "@/lib/utils";
 import { ApiResponseType, SearchParamsFilterType } from "@/types";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 const createRequestConfig = (
   method: string,
@@ -78,6 +79,14 @@ async function request<T>(
   try {
     console.log(url)
     const response = await fetch(url, config);
+
+    if (response.status === 401 || response.status === 403) {
+      // token хугацаа дууссан/хүчингүй болсон — session-г цэвэрлээд
+      // шууд login руу гаргана.
+      cookieStore.delete("token");
+      redirect("/login");
+    }
+
     if (!response.ok) {
       return {
         ...errorData,
@@ -88,6 +97,18 @@ async function request<T>(
 
     return processResponse<T>(response);
   } catch (err) {
+    // next/navigation-ийн redirect() дотроо тусгай алдаа шидээд
+    // Next.js runtime-аар barьцаагдвал зохих тул дахин шид (эс тэгвэл
+    // дээрх redirect("/login") ажиллахгүй болно).
+    if (
+      err &&
+      typeof err === "object" &&
+      "digest" in err &&
+      String((err as { digest?: unknown }).digest).startsWith("NEXT_REDIRECT")
+    ) {
+      throw err;
+    }
+
     return { ...errorData, errors: [{ message: `Алдаа гарлаа! ${err}` }] };
   }
 }

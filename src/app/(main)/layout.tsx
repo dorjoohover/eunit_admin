@@ -1,5 +1,9 @@
 import { FunctionComponent, ReactNode } from "react";
 
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
+import { cn } from "@/lib/utils";
+
 // import { getSupplier } from "@/services";
 
 interface MainLayoutProps {
@@ -17,9 +21,10 @@ const MainLayout: FunctionComponent<MainLayoutProps> = async ({ children }) => {
   // }
 
   return (
-    // <NextAuthProvider>
-    <>{children}</>
-    // </NextAuthProvider>
+    <SidebarProvider>
+      <AppSidebar />
+      <main className={cn("w-full")}>{children}</main>
+    </SidebarProvider>
   );
 };
 
