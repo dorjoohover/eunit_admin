@@ -1,28 +1,36 @@
-import { setCookie } from '@/app/actions/cookies';
 import { API_URL } from '@/lib/configs';
+import { UserType } from '@/types';
 
-export async function loginFetch<T>(body: T) {
-  const response = await fetch(`${API_URL}/users/signIn`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(body)
-  });
+type LoginPayload = {
+  email: string;
+  password?: string;
+};
 
-  const data = await response.json();
+type LoginResult = {
+  accessToken?: string;
+  user?: UserType;
+  message?: string;
+};
 
-  if (response.ok) {
-    const cookies = response.headers.get('set-cookie');
+// core-ийн жинхэнэ endpoint: @Public() @Post('login') (prefix-гүй, /users/signIn биш)
+export async function loginFetch(body: LoginPayload): Promise<LoginResult> {
+  try {
+    const response = await fetch(`${API_URL}login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
 
-    if (cookies) {
-      setCookie('session', cookies.toString());
+    const data = await response.json();
 
-      if (data && data.deviceInfo && data.deviceInfo.fingerprint) {
-        setCookie('deviceFingerprint', data.deviceInfo.fingerprint);
-      }
+    if (!response.ok || !data?.accessToken) {
+      return { message: data?.message || 'Нэвтрэхэд алдаа гарлаа.' };
     }
-  }
 
-  return data;
+    return { accessToken: data.accessToken, user: data.user };
+  } catch {
+    return { message: 'Сервертэй холбогдоход алдаа гарлаа.' };
+  }
 }

@@ -1,41 +1,40 @@
-// 'use server';
+'use server';
 
-// import { signIn, signOut } from '@/auth';
-// import { loginFetch } from '@/services';
-// import { headers } from 'next/headers';
-// import { deleteCookie, getCookie } from '@/app/actions/cookies';
-// import { formDataToObject } from '@/utils';
+import { redirect } from 'next/navigation';
 
-// export async function loginAction(formData: FormData) {
-//   const data = formDataToObject(formData);
+import { loginFetch } from '@/services';
+import { deleteCookie, setCookie } from '@/app/actions/cookies';
+import { formDataToObject } from '@/lib/utils';
 
-//   const headersList = await headers();
+// core-ийн Role enum: Admin = 10, Client = 20 (core/src/auth/guards/role/role.enum.ts)
+const ADMIN_ROLE = 10;
 
-//   const deviceFingerprint = await getCookie('deviceFingerprint');
+export async function loginAction(formData: FormData) {
+  const data = formDataToObject(formData) as { email?: string; password?: string };
 
-//   const loginData = {
-//     deviceName: headersList.get('user-agent') ?? 'unknown device',
-//     deviceType: 'web',
-//     ...data,
-//     ...(deviceFingerprint ? { deviceFingerprint: deviceFingerprint.value } : {})
-//   };
+  if (!data.email) {
+    return { message: 'Имэйл хаягаа оруулна уу.' };
+  }
 
-//   const { user, errors } = await loginFetch(loginData);
+  const { accessToken, user, message } = await loginFetch({
+    email: data.email,
+    password: data.password,
+  });
 
-//   if (user) {
-//     await signIn('credentials', {
-//       userId: user.id,
-//       redirectTo: '/dashboard'
-//     });
-//   }
+  if (!accessToken || !user) {
+    return { message: message || 'Нэвтрэхэд алдаа гарлаа.' };
+  }
 
-//   return {
-//     message: errors[0].message
-//   };
-// }
+  if (user.role !== ADMIN_ROLE) {
+    return { message: 'Танд админ хэсэгт хандах эрх байхгүй байна.' };
+  }
 
-// export async function logoutAction() {
-//   deleteCookie('supplierId');
-//   deleteCookie('session');
-//   await signOut({ redirectTo: '/login' });
-// }
+  await setCookie('token', accessToken, { httpOnly: true, maxAge: 60 * 60 * 24 * 30 });
+
+  redirect('/users');
+}
+
+export async function logoutAction() {
+  await deleteCookie('token');
+  redirect('/login');
+}

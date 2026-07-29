@@ -2,10 +2,20 @@
 
 import { cookies } from 'next/headers';
 
-export async function setCookie(name: string, value: string) {
+export async function setCookie(
+  name: string,
+  value: string,
+  options?: { httpOnly?: boolean; maxAge?: number }
+) {
   const cookieStore = await cookies();
 
-  cookieStore.set(name, value);
+  cookieStore.set(name, value, {
+    httpOnly: options?.httpOnly ?? false,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+    ...(options?.maxAge ? { maxAge: options.maxAge } : {}),
+  });
 }
 
 export async function deleteCookie(name: string) {
