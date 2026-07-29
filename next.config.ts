@@ -2,12 +2,13 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "standalone",
-  env: {
-    API_URL: process.env.API_URL,
-    // MEDIA_URL: process.env.MEDIA_URL,
-    // MEDIA_UPLOAD: process.env.MEDIA_UPLOAD,
-  },
-
+  // "env" key-г санаатайгаар ХАССАН: энэ нь утгыг Docker BUILD хийх үед
+  // (npm run build) шууд bundle-д "frozen" болгож бичдэг тул VPS дээрх
+  // .env.admin-д тохируулсан API_URL-ийг үл тоомсорлож undefined хэвээр
+  // үлддэг байсан (web repo-д яг ийм асуудлаас болж хуучин hostname
+  // үлдэж байсныг санаарай). process.env.API_URL-ийг server-талын кодоос
+  // шууд ашиглавал (lib/configs/env.configs.ts шиг) энгийн Node.js
+  // runtime env унших маягаар зөв ажиллана.
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "m.ebazaar.mn" },
