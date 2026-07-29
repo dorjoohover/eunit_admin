@@ -14,8 +14,11 @@ type LoginResult = {
 
 // core-ийн жинхэнэ endpoint: @Public() @Post('login') (prefix-гүй, /users/signIn биш)
 export async function loginFetch(body: LoginPayload): Promise<LoginResult> {
+  const url = `${API_URL}login`;
+  console.log('[loginFetch] calling', url);
+
   try {
-    const response = await fetch(`${API_URL}login`, {
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -24,13 +27,15 @@ export async function loginFetch(body: LoginPayload): Promise<LoginResult> {
     });
 
     const data = await response.json();
+    console.log('[loginFetch] status', response.status, 'body', data);
 
     if (!response.ok || !data?.accessToken) {
       return { message: data?.message || 'Нэвтрэхэд алдаа гарлаа.' };
     }
 
     return { accessToken: data.accessToken, user: data.user };
-  } catch {
+  } catch (err) {
+    console.log('[loginFetch] threw', err);
     return { message: 'Сервертэй холбогдоход алдаа гарлаа.' };
   }
 }
