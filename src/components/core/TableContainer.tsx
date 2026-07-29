@@ -339,9 +339,11 @@ export const TableContainer = ({ children }: { children: ReactNode }) => {
   // const data: { name: string; value: string | number }[] = [];
   return (
     <div className="mx-6 my-5 rounded-md bg-white  ">
-      <div className="px-8 py-6 mb-3  border-b">
-        <h1 className="font-semibold text-primary text-lg">{value.title}</h1>
-      </div>
+      {value.title && (
+        <div className="px-8 py-6 mb-3  border-b">
+          <h1 className="font-semibold text-primary text-lg">{value.title}</h1>
+        </div>
+      )}
       <div>
         <form action={`/${path}`}>
           <div className="flex items-end gap-4 mx-6 mb-8">
