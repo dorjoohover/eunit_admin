@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
 
 import { loginAction } from '@/app/actions/auth';
@@ -13,23 +13,27 @@ import { tr } from '@/lib/utils';
 function LoginForm() {
   const [message, setMessage] = useState<string>('');
   const [isVisible, setIsVisible] = useState<boolean>(false);
-  const [isPending, setIsPending] = useState<boolean>(false);
+  const [isPending, startTransition] = useTransition();
 
   const toggleVisibility = () => setIsVisible((prev) => !prev);
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setMessage('');
-    setIsPending(true);
 
     const formData = new FormData(e.currentTarget);
-    const result = await loginAction(formData);
 
-    setIsPending(false);
+    // Server Action-г шууд дуудахдаа startTransition дотор дуудах ёстой —
+    // эс тэгвэл loginAction дотрох redirect('/users') зөв боловсрогдохгүй,
+    // юу ч болоогүй мэт (URL өөрчлөгдөхгүй, алдаа ч гарахгүй) чимээгүй
+    // "алга" болдог.
+    startTransition(async () => {
+      const result = await loginAction(formData);
 
-    if (result?.message) {
-      setMessage(result.message);
-    }
+      if (result?.message) {
+        setMessage(result.message);
+      }
+    });
   };
 
   return (

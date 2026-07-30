@@ -21,6 +21,8 @@ export async function loginAction(formData: FormData) {
     password: data.password,
   });
 
+  console.log('[loginAction] accessToken?', !!accessToken, 'role', user?.role);
+
   if (!accessToken || !user) {
     return { message: message || 'Нэвтрэхэд алдаа гарлаа.' };
   }
@@ -30,6 +32,7 @@ export async function loginAction(formData: FormData) {
   }
 
   await setCookie('token', accessToken, { httpOnly: true, maxAge: 60 * 60 * 24 * 30 });
+  console.log('[loginAction] cookie set, redirecting to /users');
 
   redirect('/users');
 }
