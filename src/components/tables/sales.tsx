@@ -125,7 +125,7 @@ function serviceFormatter(service: SaleType): {
                   `bg-${bg(service.paymentType)}`
                 }`}
                 target="_blank"
-                href={`https://www.eunit.mn/${
+                href={`https://admin.eunit.mn/${
                   service.request?.area != undefined ? "report" : "car"
                 }/result?id=${service.request?.id}`}
               >
